@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  backend-api:
+    image: node
+    container_name: backend-api
+    
+    env_file: .env
+    environment:
+      - MONGO_USERNAME=$MONGO_USERNAME
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MONGO_HOSTNAME=$MONGO_HOSTNAME
+      - MONGO_PORT=$MONGO_PORT
+      - MONGO_DB=$MONGO_DB
+    ports:
+      - "8080:8080"
+    restart: always  
+    volumes:
+      - ./:/home/node/app
+    networks:
+      - backend
+    command: npm start
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    env_file: .env
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    volumes:     
+      - dbdata:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  dbdata:
